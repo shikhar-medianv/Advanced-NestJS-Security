@@ -1,6 +1,9 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, Redirect, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Put, Query, RawBody, Redirect, Req } from "@nestjs/common";
 import express from "express"
 import { url } from "inspector";
+import { CreateUserDTO } from "./dto/create-user.dto";
+import { UserService } from "./users.service";
+import { ParseIntPipe } from '@nestjs/common';
 
 interface QueryParams {
     id: number;
@@ -54,9 +57,50 @@ export class UserController {
 
     // POST
     @Post('/video')
-    addVideo(@Body() body:any){
+    addVideo(@Body() body: any) {
         return body.name
     }
+
+    // CRUD
+    constructor(private userService: UserService) { }
+
+
+    @Post()
+    createUser(@Body() createUserDto: CreateUserDTO) {
+        this.userService.addUser(createUserDto)
+        return { message: "USER ADDED" }
+    }
+
+    @Get()
+    findAllUsers() {
+        return this.userService.getUsers()
+    }
+
+    @Get(':id')
+    findUser(@Param('id') id: string) {
+        const user = this.userService.getUser(Number(id))
+
+        if (!user) {
+            throw new NotFoundException('User not found')
+        }
+
+        return user
+    }
+
+
+    @Put(':id')
+    updateUser(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: CreateUserDTO) {
+        this.userService.updateUser(id, updateUserDto)
+        return { message: 'USER UPDATED' }
+    }
+
+    @Delete(":id")
+    deleteUser(@Param('id', ParseIntPipe) id: number) {
+        this.userService.deleteUser(id)
+        return { message: 'USER DELETED' }
+    }
+
+
 
 
 }
