@@ -1,9 +1,27 @@
-import { Controller, Get, HttpCode, Redirect, Req } from "@nestjs/common";
+import { Controller, Get, HttpCode, Param, Query, Redirect, Req } from "@nestjs/common";
 import express from "express"
 import { url } from "inspector";
 
+interface QueryParams {
+    id: number;
+    name: string
+}
+
 @Controller("/users")
 export class UserController {
+
+    // Route Parameters
+    @Get('/videos/:id/:name')
+    getVideos(@Param('name') param: any) {
+        return param
+    }
+
+    // Query Parameters
+    @Get('/images')
+    getimages(@Query() query: QueryParams) {
+        console.log(query.id)
+        return 'success'
+    }
 
     @Get('/profile')
     // @HttpCode(200)
@@ -33,4 +51,7 @@ export class UserController {
     redirectWallet() {
         return "You are getting redirected to wallet"
     }
+
+
+
 }
