@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Param, Query, Redirect, Req } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Param, Post, Query, Redirect, Req } from "@nestjs/common";
 import express from "express"
 import { url } from "inspector";
 
@@ -52,6 +52,11 @@ export class UserController {
         return "You are getting redirected to wallet"
     }
 
+    // POST
+    @Post('/video')
+    addVideo(@Body() body:any){
+        return body.name
+    }
 
 
 }
